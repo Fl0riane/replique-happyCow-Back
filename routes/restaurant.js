@@ -5,20 +5,51 @@ const Restaurant = require("../models/Restaurant");
 
 router.get("/restaurants", async (req, res) => {
   try {
-    const name = req.query.name || "";
-    const limit = req.query.limit || "50";
-    const skip = req.query.skip || "0";
-    const country = req.query.country || "0";
+    let limit = 20;
 
-    const response = await axios.get(
-      `http://mongodb://localhost:27017/happyCow/restaurants?name=${name}&country=${country}&limit=${limit}&skip=${skip}`
-    );
+    const restaurants = await Restaurant.find().limit(limit);
 
-    const data = response.data;
-    res.status(200).json(data);
+    const count = await Restaurant.countDocuments();
+
+    res.json({
+      count: count,
+      restaurants: restaurants,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: error.message });
   }
 });
+
+router.get("/restaurants/country", async (req, res) => {
+  try {
+    let filters = {};
+    if (req.query.address) {
+      filters.address = new RegExp(req.query.adress, "i");
+    }
+    let page;
+    if (Number(req.query.page) < 1) {
+      page = 1;
+    } else {
+      page = Number(req.query.page);
+    }
+
+    let limit = 81;
+
+    const restaurants = await Restaurant.find(filters)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const count = await Restaurant.countDocuments(filters);
+
+    res.json({
+      count: count,
+      restaurants: restaurants,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

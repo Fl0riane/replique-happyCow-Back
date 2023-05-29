@@ -5,9 +5,14 @@ const Restaurant = mongoose.model("Restaurant", {
   name: { type: String, required: true },
   address: { type: String, required: true },
   location: {
-    lng: Number,
-    lat: Number,
-    required: true,
+    lng: {
+      type: Number,
+      required: true,
+    },
+    lat: {
+      type: Number,
+      required: true,
+    },
   },
   phone: { type: Number, required: true },
   thumbnail: String,
