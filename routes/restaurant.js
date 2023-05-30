@@ -21,12 +21,13 @@ router.get("/restaurants", async (req, res) => {
   }
 });
 
-router.get("/restaurants/country", async (req, res) => {
+router.get("/restaurants/:country", async (req, res) => {
   try {
     let filters = {};
-    if (req.query.address) {
-      filters.address = new RegExp(req.query.adress, "i");
+    if (req.query.country) {
+      filters.adress = new RegExp(req.query.country, "i");
     }
+    // console.log("log filter", filters);
     let page;
     if (Number(req.query.page) < 1) {
       page = 1;
