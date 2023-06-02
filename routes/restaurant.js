@@ -9,10 +9,7 @@ router.get("/restaurants", async (req, res) => {
 
     const restaurants = await Restaurant.find().limit(limit);
 
-    const count = await Restaurant.countDocuments();
-
     res.json({
-      count: count,
       restaurants: restaurants,
     });
   } catch (error) {
@@ -21,27 +18,37 @@ router.get("/restaurants", async (req, res) => {
   }
 });
 
-router.get("/restaurants/:country", async (req, res) => {
+router.get("/restaurants/country", async (req, res) => {
   try {
+    let count = 0;
     let filters = {};
-    if (req.query.country) {
-      filters.adress = new RegExp(req.query.country, "i");
-    }
-    // console.log("log filter", filters);
-    let page;
-    if (Number(req.query.page) < 1) {
-      page = 1;
+    if (req.query.address) {
+      filters.address = new RegExp(`, ${req.query.address}`, "i");
     } else {
-      page = Number(req.query.page);
+      filters.address = "paris";
     }
+
+    if (req.query.type) {
+      filters.type = new RegExp(req.query.type, "i");
+    }
+
+    let page;
+    if (req.query.page) {
+      if (req.query.page < 1) {
+        page = 1;
+      } else {
+        page = req.query.page;
+      }
+    } else page = 1;
 
     let limit = 81;
 
     const restaurants = await Restaurant.find(filters)
       .skip((page - 1) * limit)
       .limit(limit);
-
-    const count = await Restaurant.countDocuments(filters);
+    console.log(filters);
+    console.log(page);
+    count = await Restaurant.countDocuments(filters);
 
     res.json({
       count: count,
