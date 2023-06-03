@@ -18,6 +18,20 @@ router.get("/restaurants", async (req, res) => {
   }
 });
 
+router.get("/restaurant/:id", async (req, res) => {
+  try {
+    const id = req.params || "";
+    const response = await axios.get(
+      `https://lereacteur-marvel-api.herokuapp.com/restaurant/${id}`
+    );
+    const data = response.data;
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(error).json({ error: error.message });
+  }
+});
+
 router.get("/restaurants/country", async (req, res) => {
   try {
     let count = 0;
