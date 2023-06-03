@@ -21,12 +21,9 @@ router.get("/restaurants", async (req, res) => {
 router.get("/restaurant/:id", async (req, res) => {
   try {
     const id = req.params || "";
-    const response = await axios.get(
-      `https://lereacteur-marvel-api.herokuapp.com/restaurant/${id}`
-    );
-    const data = response.data;
+    const restaurant = await Restaurant.find({ id });
 
-    res.status(200).json(data);
+    res.status(200).json(restaurant);
   } catch (error) {
     res.status(error).json({ error: error.message });
   }
