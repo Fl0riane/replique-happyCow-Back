@@ -20,8 +20,8 @@ router.get("/restaurants", async (req, res) => {
 
 router.get("/restaurant/:id", async (req, res) => {
   try {
-    const id = req.params || "";
-    const restaurant = await Restaurant.find(id);
+    const id = req.params;
+    const restaurant = await Restaurant.findById(req.params);
 
     res.status(200).json(restaurant);
   } catch (error) {
